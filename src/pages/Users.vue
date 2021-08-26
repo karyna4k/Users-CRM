@@ -5,16 +5,19 @@
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Gender</th>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="user in users" :key="user.id">
-              <td>{{ user.name }}</td>
-              <td>{{ user.age }}</td>
-              <td>{{ user.gender }}</td>
+              <td>
+                <img :src="user.avatar" :alt="user.email">
+                <span>{{ user.first_name }}</span>
+              </td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.email }}</td>
             </tr>
           </tbody>
         </table>
@@ -24,6 +27,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -31,10 +36,23 @@ export default {
     };
   },
   created() {
-    this.users = [
-      { id: 1, name: "Jack", age: 22, gender: "male" },
-      { id: 2, name: "Alex", age: 24, gender: "male" },
-    ];
+    axios
+      .get("https://reqres.in/api/users")
+      .then((response) => {
+        this.users = response.data.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>
+
+<style lang="scss" scoped>
+img {
+  width: 60px;
+  height: auto;
+  margin-right: 16px;
+  border-radius: 50%;
+}
+</style>
