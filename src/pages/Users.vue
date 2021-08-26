@@ -5,15 +5,15 @@
         <table>
           <thead>
             <tr>
-              <th>First name</th>
-              <th>Last name</th>
-              <th>Email</th>
+              <th @click="sort('first_name')">First name</th>
+              <th @click="sort('last_name')">Last name</th>
+              <th @click="sort('email')">Email</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.id">
+            <tr v-for="user in usersSort" :key="user.id">
               <td>
-                <img :src="user.avatar" :alt="user.email">
+                <img :src="user.avatar" :alt="user.email" />
                 <span>{{ user.first_name }}</span>
               </td>
               <td>{{ user.last_name }}</td>
@@ -21,6 +21,8 @@
             </tr>
           </tbody>
         </table>
+        <p>Debug</p>
+        <p>sort: {{ currentSort }}, dir: {{ currentSortDir }}</p>
       </div>
     </section>
   </div>
@@ -33,6 +35,8 @@ export default {
   data() {
     return {
       users: [],
+      currentSort: "first_name",
+      currentSortDir: "asc",
     };
   },
   created() {
@@ -44,6 +48,26 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+  },
+  computed: {
+    usersSort() {
+      return this.users.sort((a, b) => {
+        let mod = 1;
+
+        if (this.currentSortDir === "desc") mod = -1;
+        if (a[this.currentSort] < b[this.currentSort]) return -1 * mod;
+        if (a[this.currentSort] > b[this.currentSort]) return 1 * mod;
+        return 0;
+      });
+    },
+  },
+  methods: {
+    sort(e) {
+      if (e === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+      }
+      this.currentSort = e;
+    },
   },
 };
 </script>
